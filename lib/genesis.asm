@@ -73,8 +73,8 @@ constant RAM_SIZE_L(RAM_SIZE_B/4)
 
 macro clearRegisters() {
     move.l  #RAM,a0      		                    //; Move address of first byte of ram (contains zero,RAM has been cleared) to a0
-	movem.l (a0),#($FFFD)      	                    //; Multiple move zero to all registers (except sp)
-	move.l  #$00000000,a0      	                    //; Clear a0
+    movem.l (a0),#($FFFD)      	                    //; Multiple move zero to all registers (except sp)
+    move.l  #$00000000,a0      	                    //; Clear a0
 }
 macro SaveAllRegistersToSP() {
     movem.l #$FFFF,-(a7)                            //; Save all registers a0-a7/d0-d7 into stack (sp) 
@@ -89,16 +89,16 @@ macro init(MAIN) {
     jmp         {MAIN}
 +
     tst.w       (JOYSTICK1_CTRL).l                  //; Test Joystick 1
-	bne -                                           //; Branch if Not Equal (to zero) - to Main
-	tst.w       (EXPANSION_CTRL).l                  //; Test Expansion Port
-	bne -                                           //; Branch if Not Equal (to zero) - to Main
+    bne -                                           //; Branch if Not Equal (to zero) - to Main
+    tst.w       (EXPANSION_CTRL).l                  //; Test Expansion Port
+    bne -                                           //; Branch if Not Equal (to zero) - to Main
 }
 
 macro initTMSS() {  
-	move.b      (VERSION).l,d0                      //; Move Megadrive hardware version to d0
-	andi.b      #$0F,d0                             //; The version is stored in last four bits, so mask it with 0F
-	beq         +                                   //; If version is equal to 0, skip TMSS signature
-	move.l      #"SEGA",(TMSS).l                    //; Move the string "SEGA" to $A14000 (TMSS)
+    move.b      (VERSION).l,d0                      //; Move Megadrive hardware version to d0
+    andi.b      #$0F,d0                             //; The version is stored in last four bits, so mask it with 0F
+    beq         +                                   //; If version is equal to 0, skip TMSS signature
+    move.l      #"SEGA",(TMSS).l                    //; Move the string "SEGA" to $A14000 (TMSS)
     +
 }
 
@@ -140,10 +140,10 @@ macro enableInterrupts() {
 }
 
 macro setInterruptLevel(LEVEL) {
-	move.w      sr,d0
+    move.w      sr,d0
     if ({LEVEL} == 3) {
         andi.w #$F8FF,d0	                        // ; INT level 3 (all interrupts)
     }
-	move.w      d0,sr
+    move.w      d0,sr
     clr.l       d0			                        // ; Clear d0
 }
