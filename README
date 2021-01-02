@@ -1,0 +1,9 @@
+Sega Genesis / Mega Drive Assembly Code 
+by Hans Bonini (Anime_World)
+
+All code compiles out of box with the bass assembler by byuu:
+https://github.com/ARM9/bass
+
+Howto Compile:
+All the code compiles into a single binary (ROMNAME.md) file.
+Using bass Run: make.bat
