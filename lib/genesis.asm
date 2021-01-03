@@ -94,11 +94,15 @@ macro init(MAIN) {
     bne -                                           //; Branch if Not Equal (to zero) - to Main
 }
 
-macro initTMSS() {  
+macro initTMSS() {
+    bra +
+-
+    db          "SEGA"
++
     move.b      (VERSION).l,d0                      //; Move Megadrive hardware version to d0
     andi.b      #$0F,d0                             //; The version is stored in last four bits, so mask it with 0F
     beq         +                                   //; If version is equal to 0, skip TMSS signature
-    move.l      #"SEGA",(TMSS).l                    //; Move the string "SEGA" to $A14000 (TMSS)
+    move.l      (-).l,(TMSS).l                      //; Move the string "SEGA" to $A14000 (TMSS)
     +
 }
 
