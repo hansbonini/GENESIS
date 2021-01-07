@@ -18,27 +18,8 @@ constant    CONFIG_VBLANKINTERRUPT(vblank)
 include     "../../lib/genesis.asm"
 include     "../../lib/genesis_gfx.asm"
 
-
-macro loadTextToPlaneA(SRC, LENGTH, LINE, COL) {
-    SaveAllRegistersToSP()
-
-    setWriteVRAM(($C000+({LINE}*$80)+({COL}*2)))
-
-    clr.l  d0
-    move.w #(text_helloworld_end)-text_helloworld,d0
-    lea    (text_helloworld).l,a0
-    
--
-    cmp.w  #0,d0
-    beq    +
-    clr.l  d1
-    move.w #$8000,d1
-    add.b  (a0)+,d1
-    move.w d1,(VDP_DATA).l
-    dbf    d0,-
-+
-    LoadAllRegistersFromSP()
-}
+constant    CONFIG_PLANEA($C000)
+constant    CONFIG_PLANEB($E000)
 
 origin $0000000
 header:
@@ -103,9 +84,9 @@ start:
     setInterruptLevel(3)
 
 main:
-    dmaLoadVRAM(gfx_font, gfx_font_end, $0400)
+    dmaLoadVRAM(gfx_font, gfx_font_end, $0020)
     loadPal(palette,16,0)
-    loadTextToPlaneA(text_helloworld, (text_helloworld_end-text_helloworld), 10, 5)
+    drawAsciiTextToPlaneA(text_helloworld, (text_helloworld_end-text_helloworld), 10, 5, 0)
 
 loop:
     bra loop
