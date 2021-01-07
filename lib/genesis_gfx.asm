@@ -1,8 +1,10 @@
 macro waitVBlank() {
+    SaveAllRegistersToSP()
 -
     move.w 	VDP_CTRL,d0 		                    // ; copy VDP status to d0
     btst   	#3,d0     			                    // ; vblank state in bit 3
     beq  	- 	                                    // ; wait for vblank to complete
+    LoadAllRegistersFromSP()
 }
 
 macro setVDPRegisters(SRC) {
@@ -77,7 +79,7 @@ macro loadPal(SRC, LENGTH, INDEX) {
     SaveAllRegistersToSP()
 
     clr.l       d0
-    move.b      #({INDEX}*$1E),d0
+    move.b      #({INDEX}*$20),d0
     lea         ({SRC}).l,a0
                                                     // ;  Colour index to CRAM destination address
 	swap        d0                                  // ;  Move address to upper word

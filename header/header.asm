@@ -10,8 +10,8 @@
       dl   CONFIG_EXCEPTION                                                  // ; Division by zero
       dl   CONFIG_EXCEPTION 
       dl   CONFIG_EXCEPTION
-      dl   CONFIG_EXCEPTION                                                 // ; CHK CONFIG_EXCEPTIONdl   CONFIG_EXCEPTION                                                  // ; TRAPV CONFIG_EXCEPTIONdl   CONFIG_EXCEPTION                                                  // ; Privilege violation
-      dl   CONFIG_NULLINTERRUPT                                              // ; TRACE CONFIG_EXCEPTIONdl   CONFIG_NULLINTERRUPT                                              // ; Line-A emulator
+      dl   CONFIG_EXCEPTION                                                  // ; CHK 
+      dl   CONFIG_NULLINTERRUPT                                              // ; TRACE
       dl   CONFIG_NULLINTERRUPT                                              // ; Line-F emulator
       dl   CONFIG_NULLINTERRUPT                                              // ; Unused (reserved)
       dl   CONFIG_NULLINTERRUPT                                              // ; Unused (reserved)
@@ -25,16 +25,16 @@
       dl   CONFIG_NULLINTERRUPT                                              // ; Unused (reserved)
       dl   CONFIG_NULLINTERRUPT                                              // ; Unused (reserved)
       dl   CONFIG_NULLINTERRUPT                                              // ; Unused (reserved)
-      dl   CONFIG_NULLINTERRUPT                                              // ; Spurious CONFIG_EXCEPTIONdl   CONFIG_NULLINTERRUPT                                              // ; IRQ level 1
+      dl   CONFIG_NULLINTERRUPT                                              // ; Spurious
+      dl   CONFIG_NULLINTERRUPT                                              
+      dl   CONFIG_NULLINTERRUPT                                              // ; IRQ level 1
       dl   CONFIG_NULLINTERRUPT                                              // ; IRQ level 2
-      dl   CONFIG_NULLINTERRUPT
-      dl   CONFIG_NULLINTERRUPT
-      dl   CONFIG_NULLINTERRUPT                                                    // ; IRQ level 3
+      dl   CONFIG_NULLINTERRUPT                                              // ; IRQ level 3
       dl   CONFIG_HBLANKINTERRUPT                                            // ; IRQ level 4 (horizontal retrace interrupt)
       dl   CONFIG_NULLINTERRUPT                                              // ; IRQ level 5
       dl   CONFIG_VBLANKINTERRUPT                                            // ; IRQ level 6 (vertical retrace interrupt)
       dl   CONFIG_NULLINTERRUPT                                              // ; IRQ level 7
-      dl   CONFIG_NULLINTERRUPT                                              // ; TRAP #00 CONFIG_EXCEPTIONdl   CONFIG_NULLINTERRUPT                                              // ; TRAP #01 CONFIG_EXCEPTIONdl   CONFIG_NULLINTERRUPT                                              // ; TRAP #02 CONFIG_EXCEPTIONdl   CONFIG_NULLINTERRUPT                                              // ; TRAP #03 CONFIG_EXCEPTIONdl   CONFIG_NULLINTERRUPT                                              // ; TRAP #04 CONFIG_EXCEPTIONdl   CONFIG_NULLINTERRUPT                                              // ; TRAP #05 CONFIG_EXCEPTIONdl   CONFIG_NULLINTERRUPT                                              // ; TRAP #06 CONFIG_EXCEPTIONdl   CONFIG_NULLINTERRUPT                                              // ; TRAP #07 CONFIG_EXCEPTIONdl   CONFIG_NULLINTERRUPT                                              // ; TRAP #08 CONFIG_EXCEPTIONdl   CONFIG_NULLINTERRUPT                                              // ; TRAP #09 CONFIG_EXCEPTIONdl   CONFIG_NULLINTERRUPT                                              // ; TRAP #10 CONFIG_EXCEPTIONdl   CONFIG_NULLINTERRUPT                                              // ; TRAP #11 CONFIG_EXCEPTIONdl   CONFIG_NULLINTERRUPT                                              // ; TRAP #12 CONFIG_EXCEPTIONdl   CONFIG_NULLINTERRUPT                                              // ; TRAP #13 CONFIG_EXCEPTIONdl   CONFIG_NULLINTERRUPT                                              // ; TRAP #14 CONFIG_EXCEPTIONdl   CONFIG_NULLINTERRUPT                                              // ; TRAP #15 CONFIG_EXCEPTIONdl   CONFIG_NULLINTERRUPT                                              // ; Unused (reserved)
+      dl   CONFIG_NULLINTERRUPT                                              // ; TRAP #00 
       dl   CONFIG_NULLINTERRUPT                                              // ; Unused (reserved)
       dl   CONFIG_NULLINTERRUPT                                              // ; Unused (reserved)
       dl   CONFIG_NULLINTERRUPT                                              // ; Unused (reserved)
@@ -56,7 +56,7 @@
       dl   CONFIG_NULLINTERRUPT
       dl   CONFIG_NULLINTERRUPT
       dl   CONFIG_NULLINTERRUPT
-      dl   CONFIG_NULLINTERRUPT                                            // ; Unused (reserved)
+      dl   CONFIG_NULLINTERRUPT                                             // ; Unused (reserved)
       dl   CONFIG_NULLINTERRUPT
       dl   CONFIG_NULLINTERRUPT
       dl   CONFIG_NULLINTERRUPT
