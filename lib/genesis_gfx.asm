@@ -148,3 +148,114 @@ macro setReadVSRAM(OFFSET) {
 macro setWriteVSRAM(OFFSET) {
     move.l      #VDP_CTRL_VSRAM_WRITE+({OFFSET}<<16),(VDP_CTRL).l
 }
+
+
+macro drawAsciiTextToPlaneA(SRC, LENGTH, LINE, COL, PAL_INDEX) {
+    SaveAllRegistersToSP()
+
+    setWriteVRAM(($C000+({LINE}*$80)+({COL}*2)))
+
+    clr.l       d0
+    move.w      #{LENGTH},d0
+    lea         ({SRC}).l,a0
+    
+-
+    cmp.w       #0,d0
+    beq         +
+    clr.l       d1
+    move.w      #(({PAL_INDEX}*$2000)+$8000),d1
+    add.b       (a0)+,d1
+    sub.w       #$1F,d1
+    move.w      d1,(VDP_DATA).l
+    dbf         d0,-
++
+    LoadAllRegistersFromSP()
+}
+
+macro drawTilemapSequenceToPlaneA(SRC, LINE, COL, WIDTH, HEIGHT, PAL_INDEX) {
+    SaveAllRegistersToSP()
+
+    clr.l       d0
+    clr.l       d1
+    clr.l       d2
+    clr.l       d3
+    clr.l       d4
+    clr.l       d5
+    clr.l       d6
+
+    move.w      #({SRC}/32),d0
+    add.l       #(({PAL_INDEX}*$2000)+$8000),d0
+    move.w      #({WIDTH}-1),d1
+    move.w      #({HEIGHT}-1),d2
+    move.w      #(CONFIG_PLANEA+({LINE}*$80)+({COL}*2)),d3
+    move.l      #VDP_CTRL_VRAM_WRITE,d4
+    move.l      d3,d5
+    move.l      d3,d6
+    andi.w      #$3FFF,d5
+    andi.w      #$C000,d6
+    asl.l       #8,d5
+    asl.l       #8,d5
+    asr.l       #7,d6
+    asr.l       #7,d6
+    add.l       d5,d6
+    add.l       d6,d4
+    move.l      d4,d5
+
+-
+    move.l      d4,(VDP_CTRL).l
+    move.w      d0,(VDP_DATA).l
+    add.w       #1,d0
+    add.l       #$00020000,d4
+    dbf         d1,-
+
+    move.w      #({WIDTH}-1),d1
+    add.l       #$00800000,d5
+    move.l      d5,d4
+    dbf         d2,-
+
+    LoadAllRegistersFromSP()
+}
+
+macro drawTilemapSequenceToPlaneB(SRC, LINE, COL, WIDTH, HEIGHT, PAL_INDEX) {
+    SaveAllRegistersToSP()
+
+    clr.l       d0
+    clr.l       d1
+    clr.l       d2
+    clr.l       d3
+    clr.l       d4
+    clr.l       d5
+    clr.l       d6
+
+    move.w      #({SRC}/32),d0
+    add.l       #(({PAL_INDEX}*$2000)+$8000),d0
+    move.w      #({WIDTH}-1),d1
+    move.w      #({HEIGHT}-1),d2
+    move.w      #(CONFIG_PLANEB+({LINE}*$80)+({COL}*2)),d3
+    move.l      #VDP_CTRL_VRAM_WRITE,d4
+    move.l      d3,d5
+    move.l      d3,d6
+    andi.w      #$3FFF,d5
+    andi.w      #$C000,d6
+    asl.l       #8,d5
+    asl.l       #8,d5
+    asr.l       #7,d6
+    asr.l       #7,d6
+    add.l       d5,d6
+    add.l       d6,d4
+    move.l      d4,d5
+
+-
+    move.l      d4,(VDP_CTRL).l
+    move.w      d0,(VDP_DATA).l
+    add.w       #1,d0
+    add.l       #$00020000,d4
+    dbf         d1,-
+
+    move.w      #({WIDTH}-1),d1
+    add.l       #$00800000,d5
+    move.l      d5,d4
+    dbf         d2,-
+
+    LoadAllRegistersFromSP()
+}
