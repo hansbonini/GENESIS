@@ -9,9 +9,6 @@ define      CONFIG_SERIAL("GM XXXXXXXX-00")
 define      CONFIG_ROMSTART(header)
 define      CONFIG_ROMEND(end)
 
-constant    CONFIG_PLANEA($C000)
-constant    CONFIG_PLANEB($E000)
-
 constant    CONFIG_ENTRYPOINT(start)
 constant    CONFIG_EXCEPTION(exception)
 constant    CONFIG_NULLINTERRUPT(null)
@@ -20,6 +17,117 @@ constant    CONFIG_VBLANKINTERRUPT(vblank)
 
 include     "../../lib/genesis.asm"
 include     "../../lib/genesis_gfx.asm"
+
+
+macro loadTextToPlaneA(SRC, LENGTH, LINE, COL) {
+    SaveAllRegistersToSP()
+
+    setWriteVRAM(($C000+({LINE}*$80)+({COL}*2)))
+
+    clr.l       d0
+    move.w      #{LENGTH},d0
+    lea         ({SRC}).l,a0
+    
+-
+    cmp.w       #0,d0
+    beq         +
+    clr.l       d1
+    move.w      #$8000,d1
+    add.b       (a0)+,d1
+    sub.w       #$1F,d1
+    move.w      d1,(VDP_DATA).l
+    dbf         d0,-
++
+    LoadAllRegistersFromSP()
+}
+
+macro drawTilemapSequenceToPlaneA(SRC, LINE, COL, WIDTH, HEIGHT) {
+    SaveAllRegistersToSP()
+
+    clr.l       d0
+    clr.l       d1
+    clr.l       d2
+    clr.l       d3
+    clr.l       d4
+    clr.l       d5
+    clr.l       d6
+
+    move.w      #({SRC}/32),d0
+    add.l       #$A000,d0
+    move.w      #({WIDTH}-1),d1
+    move.w      #({HEIGHT}-1),d2
+    move.w      #($C000+({LINE}*$80)+({COL}*2)),d3
+    move.l      #VDP_CTRL_VRAM_WRITE,d4
+    move.l      d3,d5
+    move.l      d3,d6
+    andi.w      #$3FFF,d5
+    andi.w      #$C000,d6
+    asl.l       #8,d5
+    asl.l       #8,d5
+    asr.l       #7,d6
+    asr.l       #7,d6
+    add.l       d5,d6
+    add.l       d6,d4
+    move.l      d4,d5
+
+-
+    move.l      d4,(VDP_CTRL).l
+    move.w      d0,(VDP_DATA).l
+    add.w       #1,d0
+    add.l       #$00020000,d4
+    dbf         d1,-
+
+    move.w      #({WIDTH}-1),d1
+    add.l       #$00800000,d5
+    move.l      d5,d4
+    dbf         d2,-
+
+    LoadAllRegistersFromSP()
+}
+
+macro drawTilemapSequenceToPlaneB(SRC, LINE, COL, WIDTH, HEIGHT) {
+    SaveAllRegistersToSP()
+
+    clr.l       d0
+    clr.l       d1
+    clr.l       d2
+    clr.l       d3
+    clr.l       d4
+    clr.l       d5
+    clr.l       d6
+
+    move.w      #({SRC}/32),d0
+    add.l       #$E000,d0
+    move.w      #({WIDTH}-1),d1
+    move.w      #({HEIGHT}-1),d2
+    move.w      #($E000+({LINE}*$80)+({COL}*2)),d3
+    move.l      #VDP_CTRL_VRAM_WRITE,d4
+    move.l      d3,d5
+    move.l      d3,d6
+    andi.w      #$3FFF,d5
+    andi.w      #$C000,d6
+    asl.l       #8,d5
+    asl.l       #8,d5
+    asr.l       #7,d6
+    asr.l       #7,d6
+    add.l       d5,d6
+    add.l       d6,d4
+    move.l      d4,d5
+
+-
+    move.l      d4,(VDP_CTRL).l
+    move.w      d0,(VDP_DATA).l
+    add.w       #1,d0
+    add.l       #$00020000,d4
+    dbf         d1,-
+
+    move.w      #({WIDTH}-1),d1
+    add.l       #$00800000,d5
+    move.l      d5,d4
+    dbf         d2,-
+
+    LoadAllRegistersFromSP()
+}
 
 macro LoadVRAMDistortionMask(SRC, LENGTH, DEST, MASK) {
     SaveAllRegistersToSP()
@@ -142,12 +250,12 @@ main:
     LoadVRAMDistortionMask(gfx_logo, (gfx_logo_end-gfx_logo), $0800, $00000000)
     dmaLoadVRAM(gfx_intro_elements, (gfx_intro_elements_end-gfx_intro_elements), $2600)
     dmaLoadVRAM(gfx_castle, (gfx_castle_end-gfx_castle), $2c00)
-    drawTilemapSequenceToPlaneB($2C00,2,0,28,14,3)
+    drawTilemapSequenceToPlaneB($2C00,2,0,28,14)
     loadPal(palette_text,16,0)
     loadPal(palette_logo,16,1)
     loadPal(pallette_intro_elements,32,2)
-    drawAsciiTextToPlaneA(text_pressstart, (text_pressstart_end-text_pressstart), 13, 22, 0)
-    drawTilemapSequenceToPlaneA($800,4,14,28,8,1)
+    loadTextToPlaneA(text_pressstart, (text_pressstart_end-text_pressstart), 13, 22)
+    drawTilemapSequenceToPlaneA($800,4,14,28,8)
     jsr     animationIntroLogo
 
 
@@ -244,7 +352,7 @@ animationIntroLogo:
 animationIntroBG:
     SaveAllRegistersToSP()
 
-    drawAsciiTextToPlaneA(text_pressstart, (text_pressstart_end-text_pressstart), 13, 22,0)
+    loadTextToPlaneA(text_pressstart, (text_pressstart_end-text_pressstart), 13, 22)
 
     dmaLoadVRAM(tilemap_intro_bg, (tilemap_intro_bg_end-tilemap_intro_bg), $E800)
     clr.l   d0
@@ -296,7 +404,7 @@ animationIntroBG:
 -
     jsr     wait
     dbf     d0,-
-    drawAsciiTextToPlaneA(text_pressstart_clear, (text_pressstart_clear_end-text_pressstart_clear), 13, 22, 0)
+    loadTextToPlaneA(text_pressstart_clear, (text_pressstart_clear_end-text_pressstart_clear), 13, 22)
 
     dmaLoadVRAM(tilemap_intro_bg, (tilemap_intro_bg_end-tilemap_intro_bg), $E800)
     clr.l   d0
@@ -348,7 +456,7 @@ animationIntroBG:
 -
     jsr     wait
     dbf     d0,-
-    drawAsciiTextToPlaneA(text_pressstart_clear, (text_pressstart_clear_end-text_pressstart_clear), 13, 22, 0)
+    loadTextToPlaneA(text_pressstart_clear, (text_pressstart_clear_end-text_pressstart_clear), 13, 22)
 
     LoadAllRegistersFromSP()
 
