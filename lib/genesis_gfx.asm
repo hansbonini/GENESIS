@@ -80,10 +80,9 @@ macro loadPal(SRC, LENGTH, INDEX) {
 
     clr.l       d0
     move.b      #({INDEX}*$20),d0
-    lea         ({SRC}).l,a0
-                                                    // ;  Colour index to CRAM destination address
+    lea         ({SRC}).l,a0                        // ;  Colour index to CRAM destination address
 	swap        d0                                  // ;  Move address to upper word
-	ori.l       #VDP_CTRL_CRAM_WRITE,d0              // ;  OR CRAM write command
+	ori.l       #VDP_CTRL_CRAM_WRITE,d0             // ;  OR CRAM write command
 	move.l      d0,(VDP_CTRL).l                     // ;  Send dest address to VDP
 
     clr.l       d0
